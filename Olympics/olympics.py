@@ -136,6 +136,9 @@ def main():
     if("-h" in sys.argv or "--help" in sys.argv):
     # prints usage statement
         usage()
+    elif (len(sys.argv) <= 1):
+        print("The amount of arguments can not be handled. Refer to the usage statment below: ")
+        usage()
     elif(sys.argv[1] == 'athletes'):
         if(len(sys.argv) != 3):
             usage()
@@ -171,6 +174,7 @@ def main():
                     print(athlete[0] + ' ' + athlete[1] + ' ' + str(athlete[2]) + ' ' + athlete[3]+ ' ' +athlete[4] + '\n')
             
     else: 
+        print("The amount of arguments can not be handled. Refer to the usage statment below: ")
         usage()
 
 
