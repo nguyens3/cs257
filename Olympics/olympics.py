@@ -33,9 +33,10 @@ def get_connection():
         print(e, file=sys.stderr)
         exit()
 
-def get_athletes_by_noc(search_text):
+def get_noc(search_text):
     ''' Returns a list of the full names of athletes from the given searchstring (noc). '''
     athletes = []
+
     try:
         # Create a "cursor", which is an object with which you can iterate
         # over query results.
@@ -51,14 +52,12 @@ def get_athletes_by_noc(search_text):
                     ORDER BY athletes.athlete_name ASC;'''       
         cursor.execute(query, (search_text,))
 
-        # Iterate over the query results to produce the list of author names.
         for row in cursor:
-            name = row[0]
-            athletes.append(name)
-
+            given_name = row[0]
+            athletes.append(given_name)
     except Exception as e:
         print(e, file=sys.stderr)
-
+    
     connection.close()
     return athletes
 
@@ -70,7 +69,7 @@ def get_athletes_by_name(search_text):
                     WHERE athletes.id = results.athlete_id
                     AND events.id = results.event_id
                     AND games.id = results.games_id
-                    AND athletes.athlete_name LIKE %s
+                    AND athletes.athlete_name ILIKE CONCAT('%%', %s, '%%')
                     AND results.medal IN ('Gold','Silver','Bronze')
                     ORDER BY games.game_year;'''
         
@@ -83,7 +82,8 @@ def get_athletes_by_name(search_text):
             game_year = row[2]
             season = row[3] 
             medal = row[4]
-            athletes.append(f'{name} {event} {game_year} {season} {medal}')
+            #appended as a list to make the printing pretty
+            athletes.append([name,event,game_year,season,medal])
     
     except Exception as e:
         print(e, file=sys.stderr)
@@ -93,7 +93,8 @@ def get_athletes_by_name(search_text):
 
 def get_noc_medals():
     ''' Returns a list of medals won by noc in decreasing order '''
-    athletes = []
+    noc = []
+    noc_list = []
     try:
         query = '''SELECT noc.noc_abreviation, results.medal, COUNT(results.medal)
                     FROM noc, results
@@ -105,16 +106,25 @@ def get_noc_medals():
         cursor = connection.cursor()
         cursor.execute(query,)
         for row in cursor:
-            noc = row[0]
-            medal = row[1]
+            nocs = row[0]
             count = row[2]
-            athletes.append(f'{noc} {medal} {count}')
-
+            #appended as a list to make the printing pretty
+            noc.append([nocs,count])
+            noc_list.append(nocs)
+        #for nocs with 0 gold medals 
+        query ='''SELECT noc_abreviation
+                FROM NOC
+                ORDER BY noc_abreviation ASC;'''
+        cursor = connection.cursor()
+        cursor.execute(query,)
+        for row in cursor:
+            if row[0] not in noc_list:
+                noc.append([row[0], 0])
     except Exception as e:
         print(e, file=sys.stderr)
 
     connection.close()
-    return athletes
+    return noc
 
 def usage():
     usage = open('usage.txt')
@@ -122,6 +132,7 @@ def usage():
     usage.close()
 
 def main():
+    
     if("-h" in sys.argv or "--help" in sys.argv):
     # prints usage statement
         usage()
@@ -129,17 +140,36 @@ def main():
         if(len(sys.argv) != 3):
             usage()
         else:
-            print( get_athletes_by_name(sys.argv[2]))
+            output =  get_noc(sys.argv[2])
+            if len(output) == 0:
+                print(sys.argv[2] + ' : Does not exist in the dataset')
+            else:
+                for athlete in output:
+                    print(athlete + '\n')
+                
     elif(sys.argv[1] == 'medals'):
         if(len(sys.argv) != 2):
             usage()
         else:
-            print(get_noc_medals())
+            
+            output = get_noc_medals()
+            for noc in output:
+                print(noc[0] + ' ' + str(noc[1]) + '\n' )
+                
     elif(sys.argv[1] == 'search_athlete'):
+        
         if(len(sys.argv) != 3):
             usage()
+            
         else:
-            print( get_athletes_by_noc(sys.argv[2]))
+            output =  get_athletes_by_name(sys.argv[2])
+            
+            if len(output) == 0:
+                print(sys.argv[2] + ' : Does not exist in the dataset')
+            else:
+                for athlete in output:
+                    print(athlete[0] + ' ' + athlete[1] + ' ' + str(athlete[2]) + ' ' + athlete[3]+ ' ' +athlete[4] + '\n')
+            
     else: 
         usage()
 
