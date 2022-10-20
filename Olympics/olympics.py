@@ -156,7 +156,7 @@ def main():
             for noc in output:
                 print(noc[0] + ' ' + str(noc[1]) + '\n' )
                 
-    elif(sys.argv[1] == 'search_athlete'):
+    elif(sys.argv[1] == 'search_athletes'):
         
         if(len(sys.argv) != 3):
             usage()
