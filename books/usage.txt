@@ -1,0 +1,21 @@
+
+NAME
+	books.py 
+SYNOPSIS
+	python3 books.py author ...[-h | --help]
+	python3 books.py books ...[-h | --help]
+	python3 books.py range <start year> [,<end year>]... [-h | --help]
+	python3 books.py [-h | --help]
+DESCRIPTION
+	The following options are available:
+
+	authors Prints a list of the authors books. 
+
+	books Prints a list of books whose titles contain <search string>
+		-t sorts alphabetically by title (DEFAULT)
+		-y sorts by publication year
+
+	range <start year>[,<end year>] Prints an inclusive list of books published between years a and b.
+		Start Year (DEFAULT)
+
+	help Prints the usage/help statement if the the user's command-line syntax is invalid. 

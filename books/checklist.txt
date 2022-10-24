@@ -1,0 +1,7 @@
+Notes (aka things to consider and change)
+- How should it be mandated when searching for a range of years that the user inputs start_year = none and end_year=[a num]
+-- this presents problems when the user should not interact with the None parameter and with the way we have written our usage statement
+- Another issue is looking up an author by their first and last name
+-- currently have not fixed this problem and you can only currently look up authors by their last name
+- How do we handle it when an author or book or publication year does not exist
+- Change the method books?? bc of the sort by year specification 
