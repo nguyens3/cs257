@@ -1,0 +1,19 @@
+NAME
+    olympics.py
+
+SYNOPSIS
+    python3 olympics.py gold ...[-h | --help]
+    python3 olympics.py medals <search string>...[-h | --help]
+    python3 olympics.py athletes ...[-h | --help]
+    python3 olympics.py [-h | --help]
+    
+DESCRIPTION
+    The following options are available:
+
+    gold Prints the list of all NOCs and the number of gold medals won in descending order.
+    
+    medals Prints the list of all the medals won by the specified athlete.
+
+    athletes Prints the list of athletes that competed for the specified NOC in alphabetical order.
+
+    help Prints the usage/help statement if the user's command-line syntax is invalid.
